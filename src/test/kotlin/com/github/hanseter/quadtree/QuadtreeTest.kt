@@ -37,9 +37,6 @@ class QuadtreeTest {
             assertTrue {
                 qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
             }
-            assertTrue {
-                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
-            }
         }
 
         val boxes = (0..200).map {
@@ -83,9 +80,6 @@ class QuadtreeTest {
         points.forEach { (x, y) ->
             assertTrue {
                 qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
-            }
-            assertTrue {
-                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
             }
         }
 
@@ -172,7 +166,6 @@ class QuadtreeTest {
 
 
     @Test
-    @Disabled
     fun performanceTest() {
         val qTree = Quadtree<String>()
         val entries = (0..8999).map {
@@ -193,19 +186,12 @@ class QuadtreeTest {
         repeat(300) {
             points.forEach { (x, y) ->
                 qTree.find(x, y)
-                qTree.find2(x, y)
             }
         }
         println("find1")
         testPerformance(99) {
             points.forEach { (x, y) ->
                 qTree.find(x, y)
-            }
-        }
-        println("find2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
             }
         }
 
@@ -235,21 +221,6 @@ class QuadtreeTest {
             boxes.forEach { (x, y, a, b) ->
                 entries.filter { it.intersects(x, y, a, b) }.map { it.value }
             }
-        }
-        points.forEach { (x, y) ->
-            assertTrue {
-                qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
-            }
-            assertTrue {
-                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
-            }
-        }
-        boxes.forEach { (x, y, a, b) ->
-            assertTrue {
-                qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-                    .sorted()
-            }
-
         }
     }
 

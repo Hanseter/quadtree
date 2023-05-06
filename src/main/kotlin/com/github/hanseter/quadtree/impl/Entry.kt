@@ -7,6 +7,10 @@ data class Entry<T>(
     val maxY: Double,
     val value: T
 ) {
+    lateinit var containingQuadrant: Quadrant<T>
+    fun remove() {
+        containingQuadrant.remove(this)
+    }
     fun contains(x: Double, y: Double) =
         minX <= x && x <= maxX
                 && minY <= y && y <= maxY
