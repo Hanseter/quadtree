@@ -66,6 +66,16 @@ class Quadrant<T>(
         maxY: Double,
     ) = this.minX <= minX && this.minY <= minY && this.maxX >= maxX && this.maxY >= maxY
 
+    fun intersects(
+        minX: Double,
+        minY: Double,
+        maxX: Double,
+        maxY: Double,
+    ) = (this.minX <= maxX &&
+            minX <= this.maxX &&
+            this.minY <= maxY &&
+            minY <= this.maxY)
+
     private fun contains(x: Double, y: Double) =
         minX <= x && x <= maxX
                 && minY <= y && y <= maxY
@@ -101,7 +111,7 @@ class Quadrant<T>(
     }
 
     fun find(minX: Double, minY: Double, maxX: Double, maxY: Double, list: MutableList<T>) {
-        if (!canContain(minX, minY, maxX, maxY)) return
+        if (!intersects(minX, minY, maxX, maxY)) return
         entries.forEach {
             if (it.intersects(minX, minY, maxX, maxY)) {
                 list += it.value

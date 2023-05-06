@@ -7,10 +7,10 @@ class Quadtree<T>(
 ) {
 
     private val root = Quadrant<T>(
-        -100000.0,
-        -100000.0,
-        100000.0,
-        100000.0,
+        options.initialX,
+        options.initialY,
+        options.initialX + options.initialSize,
+        options.initialY + options.initialSize,
         options
     )
 
