@@ -7,7 +7,7 @@ class Quadrant<T>(
     private val minY: Double,
     private val maxX: Double,
     private val maxY: Double,
-    private val options: QuadtreeOptions
+    private val options: QuadtreeOptions,
 ) {
     private val midX = minX / 2 + maxX / 2
     private val midY = minY / 2 + maxY / 2
@@ -19,12 +19,7 @@ class Quadrant<T>(
     private var bottomRight: Quadrant<T>? = null
     private var bottomLeft: Quadrant<T>? = null
 
-
-    fun insert(minX: Double, minY: Double, maxX: Double, maxY: Double, value: T) {
-        insert(Entry(minX, minY, maxX, maxY, value))
-    }
-
-    private fun insert(entry: Entry<T>): Boolean {
+    fun insert(entry: Entry<T>): Boolean {
         if (!canContain(entry)) return false
         if (topLeft != null) {
             if (!topLeft!!.insert(entry)
@@ -44,7 +39,6 @@ class Quadrant<T>(
     }
 
     private fun splitQuadrant() {
-
         topLeft = Quadrant(minX, minY, midX, midY, options)
         topRight = Quadrant(midX, minY, maxX, midY, options)
         bottomRight = Quadrant(midX, midY, maxX, maxY, options)
@@ -122,5 +116,50 @@ class Quadrant<T>(
         topRight!!.find(minX, minY, maxX, maxY, list)
         bottomRight!!.find(minX, minY, maxX, maxY, list)
         bottomLeft!!.find(minX, minY, maxX, maxY, list)
+    }
+
+    fun createLargerQuadrant(entry: Entry<T>): Quadrant<T> {
+        val rootWidth = maxX - minX
+        val rootHeight = maxY - minY
+        val midEntry = calcMid(entry.minX, entry.minY, entry.maxX, entry.maxY)
+        val midQuadrant = calcMid(minX, minY, maxX, maxY)
+        if (midEntry.first <= midQuadrant.first) {
+            val minX = minX - rootWidth
+            if (midEntry.second <= midQuadrant.second) {
+                val minY = minY - rootHeight
+                return Quadrant<T>(minX, minY, maxX, maxY, options).also {
+                    it.splitQuadrant()
+                    it.bottomRight = this
+                }
+            } else {
+                val maxY = maxY + rootHeight
+                return Quadrant<T>(minX, minY, maxX, maxY, options).also {
+                    it.splitQuadrant()
+                    it.topRight = this
+                }
+            }
+        } else {
+            val maxX = maxX + rootWidth
+            if (midEntry.second <= midQuadrant.second) {
+                val minY = minY - rootHeight
+                return Quadrant<T>(minX, minY, maxX, maxY, options).also {
+                    it.splitQuadrant()
+                    it.bottomLeft = this
+                }
+            } else {
+                val maxY = maxY + rootHeight
+                return Quadrant<T>(minX, minY, maxX, maxY, options).also {
+                    it.splitQuadrant()
+                    it.topLeft = this
+                }
+            }
+        }
+
+    }
+
+    private fun calcMid(minX: Double, minY: Double, maxX: Double, maxY: Double): Pair<Double, Double> {
+        val midX = minX / 2 + maxX / 2
+        val midY = minY / 2 + maxY / 2
+        return midX to midY
     }
 }

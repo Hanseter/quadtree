@@ -11,8 +11,60 @@ import kotlin.test.assertTrue
 class QuadtreeTest {
 
     @Test
-    fun massRandomData() {
-        val qTree = Quadtree<String>()
+    fun massRandomDataTreeHasToGrow() {
+        val qTree = Quadtree<String>(
+            QuadtreeOptions(
+                initialX = -250.0,
+                initialY = -250.0,
+                initialSize = 500.0)
+        )
+        val entries = (0..8999).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            val w = Random.nextDouble(100.0, 300.0)
+            val h = Random.nextDouble(100.0, 300.0)
+            Entry(x, y, x + w, y + h, UUID.randomUUID().toString())
+        }
+        entries.forEach { (minX, minY, maxX, maxY, value) ->
+            qTree.insert(minX, minY, maxX, maxY, value)
+        }
+        val points = (0..999).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            x to y
+        }
+        points.forEach { (x, y) ->
+            assertTrue {
+                qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
+            }
+            assertTrue {
+                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
+            }
+        }
+
+        val boxes = (0..200).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            val w = Random.nextDouble(100.0, 300.0)
+            val h = Random.nextDouble(100.0, 300.0)
+            listOf(x, y, x + w, y + h)
+        }
+        boxes.forEach { (x, y, a, b) ->
+            assertTrue {
+                qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
+                    .sorted()
+            }
+
+        }
+    }
+    @Test
+    fun massRandomDataTreeHasToSplit() {
+        val qTree = Quadtree<String>(
+            QuadtreeOptions(
+                initialX = -250000.0,
+                initialY = -250000.0,
+                initialSize = 500000.0)
+        )
         val entries = (0..8999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
             val y = Random.nextDouble(-5000.0, 5000.0)
@@ -102,6 +154,20 @@ class QuadtreeTest {
         assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
         qTree.insert(200.0, 200.0, 250.0, 246.0, "Foo")
         assertTrue { qTree.find(150.0, 120.0).isEmpty() }
+    }
+
+    @Test
+    fun insertOutsideOfInitialSize() {
+        val qTree = Quadtree<String>(
+            QuadtreeOptions(
+                maxElemsPerQuadrant = 1,
+                initialX = -100.0,
+                initialY = -100.0,
+                initialSize = 200.0
+            )
+        )
+        qTree.insert(-180.0, 20.0, -120.0, 80.0, "Foo")
+        assertTrue { qTree.find(-150.0, 60.0).single() == "Foo" }
     }
 
 

@@ -1,12 +1,16 @@
 package com.github.hanseter.quadtree
 
+import com.github.hanseter.quadtree.impl.Entry
 import com.github.hanseter.quadtree.impl.Quadrant
 
+/**
+ * A quadtree for optimized spatial lookups.
+ */
 class Quadtree<T>(
     val options: QuadtreeOptions = QuadtreeOptions()
 ) {
 
-    private val root = Quadrant<T>(
+    private var root = Quadrant<T>(
         options.initialX,
         options.initialY,
         options.initialX + options.initialSize,
@@ -15,7 +19,13 @@ class Quadtree<T>(
     )
 
     fun insert(minX: Double, minY: Double, maxX: Double, maxY: Double, value: T) {
-        root.insert(minX, minY, maxX, maxY, value)
+        insert(Entry(minX, minY, maxX, maxY, value))
+    }
+
+    private tailrec fun insert(entry: Entry<T>) {
+        if (root.insert(entry)) return
+        root = root.createLargerQuadrant(entry)
+        insert(entry)
     }
 
     fun find(x: Double, y: Double): List<T> {
