@@ -1,6 +1,7 @@
 package com.github.hanseter.quadtree
 
 import com.github.hanseter.quadtree.impl.Entry
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.UUID
 import kotlin.random.Random
@@ -9,9 +10,8 @@ import kotlin.test.assertTrue
 
 class QuadtreeTest {
 
-
     @Test
-    fun insert() {
+    fun massRandomData() {
         val qTree = Quadtree<String>()
         val entries = (0..8999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
@@ -28,170 +28,6 @@ class QuadtreeTest {
             val y = Random.nextDouble(-5000.0, 5000.0)
             x to y
         }
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-
-        println("1")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find(x, y)
-            }
-        }
-        println("2")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                qTree.find2(x, y)
-            }
-        }
-
-        println("3")
-        testPerformance(99) {
-            points.forEach { (x, y) ->
-                entries.filter { it.contains(x, y) }.map { it.value }
-            }
-        }
-
-        println("########")
-        val boxes = (0..200).map {
-            val x = Random.nextDouble(-5000.0, 5000.0)
-            val y = Random.nextDouble(-5000.0, 5000.0)
-            val w = Random.nextDouble(100.0, 300.0)
-            val h = Random.nextDouble(100.0, 300.0)
-            listOf(x, y, x + w, y + h)
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-        println("1")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                qTree.find(x, y, a, b)
-            }
-        }
-        println("3")
-        testPerformance(99) {
-            boxes.forEach { (x, y, a, b) ->
-                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-            }
-        }
-
         points.forEach { (x, y) ->
             assertTrue {
                 qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
@@ -200,6 +36,14 @@ class QuadtreeTest {
                 qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
             }
         }
+
+        val boxes = (0..200).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            val w = Random.nextDouble(100.0, 300.0)
+            val h = Random.nextDouble(100.0, 300.0)
+            listOf(x, y, x + w, y + h)
+        }
         boxes.forEach { (x, y, a, b) ->
             assertTrue {
                 qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
@@ -207,19 +51,6 @@ class QuadtreeTest {
             }
 
         }
-    }
-
-    fun testPerformance(times: Int, toRun: () -> Unit) {
-        printTimes((0 until times).map {
-            measureTimeMillis(toRun)
-        })
-    }
-
-    fun printTimes(times: List<Long>) {
-        println("Max: " + times.max())
-        println("Min: " + times.min())
-        println("Avg: " + times.average())
-        println("Sum: " + times.sum())
     }
 
     @Test
@@ -271,5 +102,101 @@ class QuadtreeTest {
         assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
         qTree.insert(200.0, 200.0, 250.0, 246.0, "Foo")
         assertTrue { qTree.find(150.0, 120.0).isEmpty() }
+    }
+
+
+    @Test
+    @Disabled
+    fun performanceTest() {
+        val qTree = Quadtree<String>()
+        val entries = (0..8999).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            val w = Random.nextDouble(100.0, 300.0)
+            val h = Random.nextDouble(100.0, 300.0)
+            Entry(x, y, x + w, y + h, UUID.randomUUID().toString())
+        }
+        entries.forEach { (minX, minY, maxX, maxY, value) ->
+            qTree.insert(minX, minY, maxX, maxY, value)
+        }
+        val points = (0..999).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            x to y
+        }
+        repeat(300) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+                qTree.find2(x, y)
+            }
+        }
+        println("find1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("find2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+
+        println("iterating all entries")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                entries.filter { it.contains(x, y) }.map { it.value }
+            }
+        }
+
+        println("Testing find by rect")
+        val boxes = (0..200).map {
+            val x = Random.nextDouble(-5000.0, 5000.0)
+            val y = Random.nextDouble(-5000.0, 5000.0)
+            val w = Random.nextDouble(100.0, 300.0)
+            val h = Random.nextDouble(100.0, 300.0)
+            listOf(x, y, x + w, y + h)
+        }
+        println("tree")
+        testPerformance(99) {
+            boxes.forEach { (x, y, a, b) ->
+                qTree.find(x, y, a, b)
+            }
+        }
+        println("list")
+        testPerformance(99) {
+            boxes.forEach { (x, y, a, b) ->
+                entries.filter { it.intersects(x, y, a, b) }.map { it.value }
+            }
+        }
+        points.forEach { (x, y) ->
+            assertTrue {
+                qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
+            }
+            assertTrue {
+                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
+            }
+        }
+        boxes.forEach { (x, y, a, b) ->
+            assertTrue {
+                qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
+                    .sorted()
+            }
+
+        }
+    }
+
+    private fun testPerformance(times: Int, toRun: () -> Unit) {
+        printTimes((0 until times).map {
+            measureTimeMillis(toRun)
+        })
+    }
+
+    private fun printTimes(times: List<Long>) {
+        println("Max: " + times.max())
+        println("Min: " + times.min())
+        println("Avg: " + times.average())
+        println("Sum: " + times.sum())
     }
 }
