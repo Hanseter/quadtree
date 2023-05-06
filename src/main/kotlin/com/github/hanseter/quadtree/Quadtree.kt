@@ -29,4 +29,11 @@ class Quadtree<T>(
         root.find(minX, minY, maxX, maxY, ret)
         return ret
     }
+
+    /**
+     * Removes an entry from the quadtree. The element to remove has to be the same instance that was inserted.
+     */
+    fun remove(toRemove: T) {
+
+    }
 }

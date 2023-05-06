@@ -85,7 +85,12 @@ class QuadtreeTest {
     }
 
     @Test
-    fun remove() {
-
+    fun removesOnlySameInstances() {
+        qTree.insert(100.0, 100.0, 250.0, 146.0, "Foo")
+        assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
+        qTree.remove("Foobar".take(3))
+        assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
+        qTree.remove("Foo")
+        assertTrue { qTree.find(150.0, 120.0).isEmpty() }
     }
 }
