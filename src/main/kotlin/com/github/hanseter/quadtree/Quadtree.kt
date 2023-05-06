@@ -24,6 +24,12 @@ class Quadtree<T>(
         return ret
     }
 
+    fun find2(x: Double, y: Double): List<T> {
+        val ret = ArrayList<T>()
+        root.find2(x, y, ret)
+        return ret
+    }
+
     fun find(minX: Double, minY: Double, maxX: Double, maxY: Double): List<T> {
         val ret = ArrayList<T>()
         root.find(minX, minY, maxX, maxY, ret)

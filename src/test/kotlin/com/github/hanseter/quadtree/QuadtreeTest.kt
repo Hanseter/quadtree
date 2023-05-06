@@ -10,11 +10,9 @@ import kotlin.test.assertTrue
 class QuadtreeTest {
 
     private val qTree = Quadtree<String>()
-    private val qTree2 = Quadtree2<String>()
 
     @Test
     fun insert() {
-        Thread.sleep(20000)
         val entries = (0..8999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
             val y = Random.nextDouble(-5000.0, 5000.0)
@@ -22,21 +20,8 @@ class QuadtreeTest {
             val h = Random.nextDouble(100.0, 300.0)
             Entry(x, y, x + w, y + h, UUID.randomUUID().toString())
         }
-//        println("1")
-//        testPerformance(50) {
-//            entries.forEach { (minX, minY, maxX, maxY, value) ->
-//                qTree.insert(minX, minY, maxX, maxY, value)
-//            }
-//        }
-//        println("2")
-//        testPerformance(50) {
-//            entries.forEach { (minX, minY, maxX, maxY, value) ->
-//                qTree2.insert(minX, minY, maxX, maxY, value)
-//            }
-//        }
         entries.forEach { (minX, minY, maxX, maxY, value) ->
             qTree.insert(minX, minY, maxX, maxY, value)
-            qTree2.insert(minX, minY, maxX, maxY, value)
         }
         val points = (0..999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
@@ -52,9 +37,73 @@ class QuadtreeTest {
         println("2")
         testPerformance(99) {
             points.forEach { (x, y) ->
-                qTree2.find(x, y)
+                qTree.find2(x, y)
             }
         }
+        println("1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+        println("1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+
+        println("1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+
+        println("1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+
+        println("1")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find(x, y)
+            }
+        }
+        println("2")
+        testPerformance(99) {
+            points.forEach { (x, y) ->
+                qTree.find2(x, y)
+            }
+        }
+
         println("3")
         testPerformance(99) {
             points.forEach { (x, y) ->
@@ -66,7 +115,7 @@ class QuadtreeTest {
                 qTree.find(x, y).sorted() == entries.filter { it.contains(x, y) }.map { it.value }.sorted()
             }
             assertTrue {
-                qTree.find(x, y).sorted() == qTree2.find(x, y).sorted()
+                qTree.find(x, y).sorted() == qTree.find2(x, y).sorted()
             }
         }
     }
