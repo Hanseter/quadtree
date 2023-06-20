@@ -5,8 +5,10 @@ import net.jqwik.api.constraints.Size
 import net.jqwik.engine.properties.arbitraries.EdgeCasesSupport
 import net.jqwik.kotlin.api.any
 import net.jqwik.kotlin.api.anyForType
+import org.junit.jupiter.api.Test
 import java.util.stream.Stream
 import kotlin.math.absoluteValue
+import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -15,6 +17,37 @@ const val BOX_COUNT = 50
 
 class QuadtreePropertyTest {
 
+
+    @Test
+    fun sortList() {
+        val list = (0..9).map { Random.nextInt() }
+        val sorted = list.sorted()
+
+
+        //size has to be the same
+
+        assertTrue { list.size == sorted.size }
+
+
+
+        //nth element has to be smaller than (n+1)th
+
+        sorted.zipWithNext().forEach { (a,b) ->
+            assertTrue { a < b }
+        }
+
+
+        //all elements in the original list have to be in the sorted list
+
+        val remaining = sorted.toMutableList()
+
+        list.forEach {
+            assertTrue { it in remaining }
+            remaining.remove(it)
+        }
+
+
+    }
 
     @Property
     fun example(@ForAll nums: List<Int>) {
