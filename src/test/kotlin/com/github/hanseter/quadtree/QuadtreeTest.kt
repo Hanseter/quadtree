@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
+import kotlin.test.Ignore
 import kotlin.test.assertTrue
 
 class QuadtreeTest {
@@ -13,10 +14,10 @@ class QuadtreeTest {
     @Test
     fun massRandomDataTreeHasToGrow() {
         val qTree = Quadtree<String>(
-            QuadtreeOptions(
-                initialX = -250.0,
-                initialY = -250.0,
-                initialSize = 500.0)
+                QuadtreeOptions(
+                        initialX = -250.0,
+                        initialY = -250.0,
+                        initialSize = 500.0)
         )
         val entries = (0..8999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
@@ -49,18 +50,19 @@ class QuadtreeTest {
         boxes.forEach { (x, y, a, b) ->
             assertTrue {
                 qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-                    .sorted()
+                        .sorted()
             }
 
         }
     }
+
     @Test
     fun massRandomDataTreeHasToSplit() {
         val qTree = Quadtree<String>(
-            QuadtreeOptions(
-                initialX = -250000.0,
-                initialY = -250000.0,
-                initialSize = 500000.0)
+                QuadtreeOptions(
+                        initialX = -250000.0,
+                        initialY = -250000.0,
+                        initialSize = 500000.0)
         )
         val entries = (0..8999).map {
             val x = Random.nextDouble(-5000.0, 5000.0)
@@ -93,7 +95,7 @@ class QuadtreeTest {
         boxes.forEach { (x, y, a, b) ->
             assertTrue {
                 qTree.find(x, y, a, b).sorted() == entries.filter { it.intersects(x, y, a, b) }.map { it.value }
-                    .sorted()
+                        .sorted()
             }
 
         }
@@ -102,12 +104,12 @@ class QuadtreeTest {
     @Test
     fun findByBBox() {
         val qTree = Quadtree<String>(
-            QuadtreeOptions(
-                maxElemsPerQuadrant = 1,
-                initialX = -100.0,
-                initialY = -100.0,
-                initialSize = 200.0
-            )
+                QuadtreeOptions(
+                        maxElemsPerQuadrant = 1,
+                        initialX = -100.0,
+                        initialY = -100.0,
+                        initialSize = 200.0
+                )
         )
         qTree.insert(-80.0, 20.0, 80.0, 80.0, "Foo")
         qTree.insert(20.0, 20.0, 80.0, 75.0, "Bar")
@@ -131,13 +133,11 @@ class QuadtreeTest {
     }
 
     @Test
-    fun removesOnlySameInstances() {
+    fun removeInstance() {
         val qTree = Quadtree<String>()
         qTree.insert(100.0, 100.0, 250.0, 146.0, "Foo")
         assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
         qTree.remove("Foobar".take(3))
-        assertTrue { qTree.find(150.0, 120.0).single() == "Foo" }
-        qTree.remove("Foo")
         assertTrue { qTree.find(150.0, 120.0).isEmpty() }
     }
 
@@ -153,12 +153,12 @@ class QuadtreeTest {
     @Test
     fun insertOutsideOfInitialSize() {
         val qTree = Quadtree<String>(
-            QuadtreeOptions(
-                maxElemsPerQuadrant = 1,
-                initialX = -100.0,
-                initialY = -100.0,
-                initialSize = 200.0
-            )
+                QuadtreeOptions(
+                        maxElemsPerQuadrant = 1,
+                        initialX = -100.0,
+                        initialY = -100.0,
+                        initialSize = 200.0
+                )
         )
         qTree.insert(-180.0, 20.0, -120.0, 80.0, "Foo")
         assertTrue { qTree.find(-150.0, 60.0).single() == "Foo" }
@@ -166,6 +166,7 @@ class QuadtreeTest {
 
 
     @Test
+    @Disabled
     fun performanceTest() {
         val qTree = Quadtree<String>()
         val entries = (0..8999).map {

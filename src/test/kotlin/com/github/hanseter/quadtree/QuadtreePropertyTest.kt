@@ -17,7 +17,6 @@ const val BOX_COUNT = 50
 
 class QuadtreePropertyTest {
 
-
     @Test
     fun sortList() {
         val list = (0..9).map { Random.nextInt() }
@@ -48,20 +47,6 @@ class QuadtreePropertyTest {
 
 
     }
-
-    @Property
-    fun example(@ForAll nums: List<Int>) {
-        println(nums)
-    }
-
-
-    @Property
-    fun shrinkingExample(@ForAll nums: List<Int>) {
-        assertTrue("Some crazy assertion") {
-            nums.size < 100 || nums.sum() % 7 > 1
-        }
-    }
-
 
     @Property
     fun findByPoint(

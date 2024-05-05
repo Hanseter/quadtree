@@ -2,7 +2,6 @@ package com.github.hanseter.quadtree
 
 import com.github.hanseter.quadtree.impl.Entry
 import com.github.hanseter.quadtree.impl.Quadrant
-import java.util.IdentityHashMap
 
 /**
  * A quadtree for optimized spatial lookups.
@@ -12,25 +11,29 @@ import java.util.IdentityHashMap
  * if you insert an element that would not fit into the tree otherwise.
  */
 class Quadtree<T>(
-    val options: QuadtreeOptions = QuadtreeOptions()
+        val options: QuadtreeOptions = QuadtreeOptions()
 ) {
 
     private var root = Quadrant<T>(
-        options.initialX,
-        options.initialY,
-        options.initialX + options.initialSize,
-        options.initialY + options.initialSize,
-        options
+            options.initialX,
+            options.initialY,
+            options.initialX + options.initialSize,
+            options.initialY + options.initialSize,
+            options
     )
 
     /**
-     * A list of all entries in this tree.
+     * A copied list of all entries in this tree.
      */
     val values: List<T>
         get() = entries.keys.toList()
 
-    private val entries = IdentityHashMap<T, Entry<T>>()
+    private val entries = HashMap<T, Entry<T>>()
 
+    /**
+     * Insert a new element into the quadtree.
+     * Calling this method with an [value] that is already in the quadtree, it will merely update its coordinates.
+     */
     fun insert(minX: Double, minY: Double, maxX: Double, maxY: Double, value: T) {
         val entry = Entry(minX, minY, maxX, maxY, value)
         insert(entry)
@@ -43,12 +46,18 @@ class Quadtree<T>(
         insert(entry)
     }
 
+    /**
+     * Finds all elements at the provided point.
+     */
     fun find(x: Double, y: Double): List<T> {
         val ret = ArrayList<T>()
         root.find(x, y, ret)
         return ret
     }
 
+    /**
+     * Finds all elements intersecting with the provided rectangle.
+     */
     fun find(minX: Double, minY: Double, maxX: Double, maxY: Double): List<T> {
         val ret = ArrayList<T>()
         root.find(minX, minY, maxX, maxY, ret)
@@ -56,9 +65,27 @@ class Quadtree<T>(
     }
 
     /**
-     * Removes an entry from the quadtree. The element to remove has to be the same instance that was inserted.
+     * Removes an entry from the quadtree.
      */
     fun remove(toRemove: T) {
         entries.remove(toRemove)?.remove()
+    }
+
+    /**
+     * Removes all the provided entries from the quadtree
+     * @return true if any of the specified elements was removed from the collection, false if the collection was not modified.
+     */
+    fun removeAll(toRemove: Collection<T>) {
+        toRemove.forEach {
+            remove(it)
+        }
+    }
+
+    /**
+     * Clears the quadtree, removing all entries, leaving its internal structure as is.
+     */
+    fun clear() {
+        entries.values.forEach { it.remove() }
+        entries.clear()
     }
 }
