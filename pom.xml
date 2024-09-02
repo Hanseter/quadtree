@@ -21,7 +21,7 @@
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>An extensible query engine that filters JSON objects.</description>
+    <description>A Quadtree implementation for spatial search.</description>
     <url>https://github.com/Hanseter/Quadtree</url>
 
     <licenses>
